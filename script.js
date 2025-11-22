@@ -75,19 +75,19 @@ async function initializeFirebase() {
         firebase.auth().onAuthStateChanged(async (user) => { 
             if (user) {
                 userId = user.uid;
-                userIdDisplay.textContent = `オンライン: ${userId}`;
+                userIdDisplay.textContent = `現在の暇人: ${userId}`;
                 submitButton.disabled = false;
                 isAuthReady = true;
                 setupRealtimeListener();
             } else {
                 userId = null;
-                userIdDisplay.textContent = "認証中";
+                userIdDisplay.textContent = "匿名認証中...";
                 submitButton.disabled = true;
                 try {
                     await firebase.auth().signInAnonymously();
                 } catch (e) {
-                    console.error("認証エラー:", e);
-                    openModal("認証エラー", "認証失敗", false);
+                    console.error("匿名認証エラー:", e);
+                    openModal("認証エラー", "匿名でのサインインに失敗しました。", false);
                     userIdDisplay.textContent = "認証失敗。";
                 }
             }
@@ -152,13 +152,13 @@ eventForm.addEventListener('submit', async (e) => {
 window.deleteEvent = async function(eventId, eventCreatorId) {
     if (!userId || !db) return;
     if (userId !== eventCreatorId) {
-        openModal("アクセス拒否", "作成者のみ削除可能", false);
+        openModal("アクセス拒否", "この予定を削除できるのは作成者のみです。", false);
         return;
     }
     
     // Promiseを使って確認ダイアログの結果を待つ
     const confirmed = await new Promise(resolve => {
-        openModal("削除の確認", "本当に削除しますか？", true, resolve);
+        openModal("削除の確認", "本当にこの予定を削除しますか？", true, resolve);
     });
     
     if (confirmed) {
@@ -166,7 +166,7 @@ window.deleteEvent = async function(eventId, eventCreatorId) {
             await db.collection(SCHEDULES_PATH).doc(eventId).delete();
         } catch (error) {
             console.error("予定の削除エラー:", error);
-            openModal("削除エラー", "問題発生", false);
+            openModal("削除エラー", "予定の削除中に問題が発生しました。", false);
         }
     }
 }
@@ -256,5 +256,3 @@ function renderEvents(events) {
 
 // 実行
 initializeFirebase();
-
-
