@@ -218,7 +218,7 @@ function renderEvents(events) {
         
         const eventItem = document.createElement('div');
         eventItem.className = `event-card p-4 rounded-lg shadow-md flex justify-between items-start ${baseClass}`;
-        eventItem.style.borderLeftColor = isPast ? '#9ca3af' : '#4f46e5';
+        eventItem.style.borderLeftColor = isPast ? '#9ca3af' : '#ff9500ff';
         
         let eventContent = `
             <div class="flex-1">
@@ -256,4 +256,5 @@ function renderEvents(events) {
 
 // 実行
 initializeFirebase();
+
 
